@@ -10,6 +10,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\Profile;
+use App\Models\Billing\Wallet;
+use App\Models\Product\UserProduct;
+use App\Models\Affiliate\AffiliateProfile;
 
 
 #[Fillable([
@@ -57,5 +61,9 @@ class User extends Authenticatable
     public function wallet()
     {
         return $this->hasOne(Wallet::class);
+    }
+    public function affiliateProfile()
+    {
+        return $this->hasOne(AffiliateProfile::class);
     }
 }

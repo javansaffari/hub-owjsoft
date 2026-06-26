@@ -13,6 +13,19 @@ return new class extends Migration
     {
         Schema::create('usage_records', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('user_product_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+
+            $table->string('usage_type');
+            // sms | api_call | storage | request
+
+            $table->integer('quantity')->default(1);
+            $table->string('unit')->default('unit');
+
+            $table->json('meta')->nullable();
+
             $table->timestamps();
         });
     }

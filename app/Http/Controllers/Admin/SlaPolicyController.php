@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Support\SlaPolicy;
 
 class SlaPolicyController extends Controller
 {
@@ -12,7 +13,9 @@ class SlaPolicyController extends Controller
      */
     public function index()
     {
-        //
+        $slas = SlaPolicy::orderBy('priority')->get();
+
+        return view('admin.sla.index', compact('slas'));
     }
 
     /**
@@ -20,7 +23,7 @@ class SlaPolicyController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.sla.create');
     }
 
     /**

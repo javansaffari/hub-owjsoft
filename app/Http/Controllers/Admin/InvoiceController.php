@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Product\Product;
+use App\Models\Billing\Invoice;
 
 class InvoiceController extends Controller
 {
@@ -12,7 +15,11 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        //
+        $invoices = Invoice::with('user')
+            ->latest()
+            ->paginate(10);
+
+        return view('admin.invoices.index', compact('invoices'));
     }
 
     /**
@@ -20,7 +27,16 @@ class InvoiceController extends Controller
      */
     public function create()
     {
-        //
+        $users = User::orderBy('name')->get();
+
+        $products = Product::where('is_active', true)
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.invoices.create', compact(
+            'users',
+            'products'
+        ));
     }
 
     /**
@@ -36,7 +52,7 @@ class InvoiceController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return view('admin.invoices.show');
     }
 
     /**
@@ -44,7 +60,7 @@ class InvoiceController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('admin.invoices.edit');
     }
 
     /**

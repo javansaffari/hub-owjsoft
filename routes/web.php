@@ -16,6 +16,8 @@ use App\Http\Controllers\Customer\AffiliateController as CustomerAffiliateContro
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\UserProductController;
+use App\Http\Controllers\Admin\UsageRecordController;
 use App\Http\Controllers\Admin\InvoiceController as AdminInvoiceController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\WalletController;
@@ -149,23 +151,29 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
             // Products
             Route::resource('products', AdminProductController::class);
+            Route::resource('user-products', UserProductController::class);
+            Route::resource('usage-records', UsageRecordController::class);
 
             // Billing
-            Route::resource('invoices', AdminInvoiceController::class);
-            Route::resource('payments', PaymentController::class);
-            Route::resource('wallets', WalletController::class);
+            Route::prefix('financial')
+                ->name('financial.')
+                ->group(function () {
+                    Route::resource('invoices', AdminInvoiceController::class);
+                    Route::resource('payments', PaymentController::class);
+                    Route::resource('wallets', WalletController::class);
+                });
 
             // Support
             Route::resource('tickets', TicketController::class);
             Route::resource('departments', DepartmentController::class);
-            Route::resource('sla-policies', SlaPolicyController::class);
+            Route::resource('sla', SlaPolicyController::class);
 
             // Affiliate
             Route::resource('affiliates', AffiliateController::class);
 
             // Logs
             Route::get('logs', [ActivityLogController::class, 'index'])
-                ->name('logs.index');
+                ->name('logs');
 
             // Settings
             Route::get('settings', [SettingController::class, 'index'])

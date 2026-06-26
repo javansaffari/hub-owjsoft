@@ -19,6 +19,7 @@ return new class extends Migration
             $table->enum('type', ['individual', 'company']);
 
             $table->string('national_code')->nullable();
+            $table->date('issue_date')->nullable();
             $table->string('company_name')->nullable();
             $table->string('registration_number')->nullable();
             $table->string('economic_code')->nullable();

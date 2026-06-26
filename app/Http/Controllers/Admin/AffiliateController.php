@@ -5,6 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use App\Models\User;
+use App\Models\Affiliate\AffiliateProfile;
+use App\Models\Affiliate\AffiliateCommission;
+use App\Models\Affiliate\Referral;
+
 class AffiliateController extends Controller
 {
     /**
@@ -12,7 +17,11 @@ class AffiliateController extends Controller
      */
     public function index()
     {
-        //
+        $affiliates = AffiliateProfile::with('user')
+            ->latest()
+            ->paginate(20);
+
+        return view('admin.affiliates.index', compact('affiliates'));
     }
 
     /**
@@ -20,7 +29,9 @@ class AffiliateController extends Controller
      */
     public function create()
     {
-        //
+        $users = User::whereDoesntHave('affiliateProfile')->get();
+
+        return view('admin.affiliates.create', compact('users'));
     }
 
     /**
@@ -28,7 +39,20 @@ class AffiliateController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'user_id' => 'required',
+            'commission_rate' => 'required|numeric',
+        ]);
+
+        AffiliateProfile::create([
+            'user_id' => $request->user_id,
+            'code' => strtoupper('AFF' . rand(10000, 99999)),
+            'commission_rate' => $request->commission_rate,
+            'balance' => 0,
+            'is_active' => true,
+        ]);
+
+        return redirect()->route('affiliates.index');
     }
 
     /**
@@ -36,7 +60,12 @@ class AffiliateController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $affiliate = AffiliateProfile::with([
+            'user',
+            'commissions'
+        ])->findOrFail($id);
+
+        return view('admin.affiliates.show', compact('affiliate'));
     }
 
     /**
@@ -44,7 +73,9 @@ class AffiliateController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $affiliate = AffiliateProfile::findOrFail($id);
+
+        return view('admin.affiliates.edit', compact('affiliate'));
     }
 
     /**
@@ -52,7 +83,14 @@ class AffiliateController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $affiliate = AffiliateProfile::findOrFail($id);
+
+        $affiliate->update([
+            'commission_rate' => $request->commission_rate,
+            'is_active' => $request->is_active ?? 0,
+        ]);
+
+        return redirect()->route('affiliates.index');
     }
 
     /**
@@ -60,6 +98,8 @@ class AffiliateController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        AffiliateProfile::findOrFail($id)->delete();
+
+        return back();
     }
 }

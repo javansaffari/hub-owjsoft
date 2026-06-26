@@ -1,10 +1,35 @@
 <?php
 
-namespace App\Models\Models\Support;
+namespace App\Models\Support;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TicketSla extends Model
 {
-    //
+    use HasFactory;
+
+    protected $fillable = [
+        'ticket_id',
+        'response_due_at',
+        'resolution_due_at',
+        'first_response_at',
+        'resolved_at',
+        'response_breached',
+        'resolution_breached',
+    ];
+
+    protected $casts = [
+        'response_due_at' => 'datetime',
+        'resolution_due_at' => 'datetime',
+        'first_response_at' => 'datetime',
+        'resolved_at' => 'datetime',
+        'response_breached' => 'boolean',
+        'resolution_breached' => 'boolean',
+    ];
+
+    public function ticket()
+    {
+        return $this->belongsTo(Ticket::class);
+    }
 }

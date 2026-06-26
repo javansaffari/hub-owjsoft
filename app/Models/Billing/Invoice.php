@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Models\Models\Billing;
+namespace App\Models\Billing;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+use App\Models\Billing\InvoiceItem;
 
 class Invoice extends Model
 {
